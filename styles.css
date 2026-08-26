@@ -176,6 +176,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .site-header.is-scrolled {
   background: rgba(10, 18, 32, 0.86);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
   backdrop-filter: blur(14px) saturate(140%);
   box-shadow: 0 1px 0 rgba(255,255,255,.07), 0 10px 30px -20px rgba(0,0,0,.9);
 }
@@ -261,11 +262,29 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 @media (max-width: 900px) {
   .nav-toggle { display: flex; }
+
+  /* El header NO debe llevar backdrop-filter mientras exista el menú overlay:
+     un elemento con backdrop-filter (igual que filter o transform) se vuelve el
+     bloque contenedor de sus descendientes position:fixed. Con él, .main-nav
+     se medía contra el header de 76px en vez del viewport y colapsaba a 0 de alto,
+     dejando los enlaces flotando sobre el contenido. Fondo sólido en su lugar. */
+  .site-header.is-scrolled {
+    background: rgba(10, 18, 32, 0.97);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
   .main-nav {
     position: fixed;
-    inset: var(--header-h) 0 0 0;
-    background: rgba(6, 11, 22, 0.98);
-    backdrop-filter: blur(10px);
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    /* Altura explícita: cubre aunque algún ancestro cree un bloque contenedor. */
+    height: calc(100vh - var(--header-h));
+    height: calc(100dvh - var(--header-h));
+    background: rgb(6, 11, 22);
+    overflow-y: auto;
+    overscroll-behavior: contain;
     transform: translateY(-12px);
     opacity: 0;
     pointer-events: none;
