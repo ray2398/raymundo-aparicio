@@ -1,0 +1,6 @@
+
+/.gitignore
+/.htaccess
+/wrangler.jsonc
+/wrangler.toml
+/.assetsignore
